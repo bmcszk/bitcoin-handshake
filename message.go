@@ -62,25 +62,35 @@ func parseHeader(header []byte) (*bitcoinMessage, error) {
 	return msg, nil
 }
 
-func (m *bitcoinMessage) toBytes() []byte {
-	message := make([]byte, 24+len(m.payload)) // 24 byte header + payload
-
+func (m *bitcoinMessage) write(writer io.Writer) error {
 	// Start with the network magic number (mainnet in this case)
-	copy(message[:4], m.magic)
+	if _, err := writer.Write(m.magic); err != nil {
+		return fmt.Errorf("writing magic: %w", err)
+	}
 
 	// Command
-	copy(message[4:16], []byte(m.command+string(make([]byte, 12-len(m.command)))))
+	if _, err := writer.Write([]byte(m.command + string(make([]byte, 12-len(m.command))))); err != nil {
+		return fmt.Errorf("writing command: %w", err)
+	}
 
 	// Payload length
-	binary.LittleEndian.PutUint32(message[16:20], m.length)
+	length := make([]byte, 4)
+	binary.LittleEndian.PutUint32(length, m.length)
+	if _, err := writer.Write(length); err != nil {
+		return fmt.Errorf("writing length: %w", err)
+	}
 
 	// Checksum: first four bytes of double SHA-256
-	copy(message[20:24], m.checksum[:4]) // Only the first 4 bytes of the second hash
+	if _, err := writer.Write(m.checksum[:4]); err != nil { // Only the first 4 bytes of the second hash
+		return fmt.Errorf("writing checksum: %w", err)
+	}
 
 	// Payload
-	copy(message[24:], m.payload)
+	if _, err := writer.Write(m.payload); err != nil {
+		return fmt.Errorf("writing payload: %w", err)
+	}
 
-	return message
+	return nil
 }
 
 func checksum(payload []byte) []byte {

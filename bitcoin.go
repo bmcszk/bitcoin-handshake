@@ -68,9 +68,8 @@ func (p *BitcoinPeer) Start() error {
 }
 
 func (p *BitcoinPeer) sendMessage(message *bitcoinMessage) error {
-	fmt.Println("Sending message: ", message.command)
-	_, err := p.conn.Write(message.toBytes())
-	if err != nil {
+	fmt.Println("Sending message:", message.command)
+	if err := message.write(p.conn); err != nil {
 		return fmt.Errorf("sending message: %w", err)
 	}
 	return nil
@@ -95,13 +94,13 @@ func (p *BitcoinPeer) readMessages() error {
 }
 
 func (p *BitcoinPeer) handleVersion(msg *bitcoinMessage) error {
-	fmt.Println("Handling version message")
+	fmt.Println("Handling message: version")
 	verackMsg := newBitcoinMessage(p.magic, "verack", nil)
 	return p.sendMessage(verackMsg)
 }
 
 func (p *BitcoinPeer) handleVerack(msg *bitcoinMessage) error {
-	fmt.Println("Handling verack message")
+	fmt.Println("Handling message: verack")
 	// Additional logic to be implemented after receiving verack
 	return ErrNoMoreMessagesSupported // let's finish for now
 }
