@@ -10,7 +10,7 @@ services:
       - bitcoin-core
 
   bitcoin-core:
-    image: ruimarinho/bitcoin-core
+    image: ruimarinho/bitcoin-core:24
     command:
       -printtoconsole
       -regtest=1
