@@ -9,9 +9,14 @@ This project implements a basic Bitcoin node that connects to other nodes in the
 - Continuously reads and handles incoming messages based on their type.
 - Modular message handling architecture.
 
+## Important Notes
+
+- This project is meant to be a minimal example of using the Bitcoin protocol. It is not intended to be a complete implementation of the Bitcoin protocol.
+- It stops working after receiving a `verack` message.
+
 ## Prerequisites
 
-- Docker
+- Docker (docker compose)
 - Make
 
 ## Testing
@@ -19,15 +24,17 @@ This project implements a basic Bitcoin node that connects to other nodes in the
 - Run `make test` to run tests.
 - Output should be similar to the following:
 ```
-app-1           | === RUN   TestBitcoinPeerStart
-app-1           | Handling version message
-app-1           | No handler for message type: wtxidrelay
-app-1           | No handler for message type: sendaddrv2
-app-1           | Verack received
-app-1           | --- PASS: TestBitcoinPeerStart (0.00s)
-app-1           | PASS
-app-1           | ok    github.com/bmcszk/bitcoin-handshake     0.004s
-app-1 exited with code 0
+test-1          | === RUN   TestBitcoinPeerStart
+test-1          | Sending message: version
+test-1          | Handling message: version
+test-1          | Sending message: verack
+test-1          | No handler for message type: wtxidrelay
+test-1          | No handler for message type: sendaddrv2
+test-1          | Handling message: verack
+test-1          | --- PASS: TestBitcoinPeerStart (0.00s)
+test-1          | PASS
+test-1          | ok    github.com/bmcszk/bitcoin-handshake     0.003s
+test-1 exited with code 0
 ```
 
 ## License

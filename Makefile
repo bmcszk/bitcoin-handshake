@@ -1,6 +1,6 @@
 .PHONY: test
 test: 
-	docker compose up --build --exit-code-from app
+	docker compose up --build --exit-code-from test
 
 .PHONY: clean
 clean:
